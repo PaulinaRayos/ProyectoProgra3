@@ -22,19 +22,23 @@ public class MetodosAyuda {
         return false;
     }
     private static boolean IsSolid(float x, float y, int[][] lvlData) {
-		if (x < 0 || x >= Juego.GAME_WIDTH)
-			return true;
-		if (y < 0 || y >= Juego.GAME_HEIGHT)
-			return true;
+        int maxWidth = lvlData[0].length * Juego.TILES_SIZE;
+        if (x < 0 || x>= maxWidth) {
+            return true;
+        }
+        if (y < 0 || y >= Juego.GAME_HEIGHT) {
+            return true;
+        }
 
-		float xIndex = x / Juego.TILES_SIZE;
-		float yIndex = y / Juego.TILES_SIZE;
+        float xIndex = x / Juego.TILES_SIZE;
+        float yIndex = y / Juego.TILES_SIZE;
 
-		int value = lvlData[(int) yIndex][(int) xIndex];
+        int value = lvlData[(int) yIndex][(int) xIndex];
 
-		if (value >= 48 || value < 0 || value != 11)
-			return true;
-		return false;
+        if (value >= 48 || value < 0 || value != 11) {
+            return true;
+        }
+        return false;
     }
     public static float GetEntidadXPosSiguientePared(Rectangle2D.Float hitbox, float xSpeed){
         int currentTile = (int) (hitbox.x / Juego.TILES_SIZE);

@@ -24,11 +24,11 @@ public class AdministrarNivel {
         importarSprites();
         nivel1= new Nivel(CargarGuardar.getDatosNivel());
     }
-    public void dibuja(Graphics g){
+    public void dibuja(Graphics g, int lvlOffset){
         for (int j = 0; j < Juego.TILES_IN_HEIGHT; j++) {
-            for (int i = 0; i < Juego.TILES_IN_WIDTH; i++) {
+            for (int i = 0; i < nivel1.getDatosNivel()[0].length; i++) {
                 int index=nivel1.getSpriteIndex(i, j);
-                g.drawImage(levelSprite[index],Juego.TILES_SIZE*i , Juego.TILES_SIZE*j,Juego.TILES_SIZE,Juego.TILES_SIZE, null);
+                g.drawImage(levelSprite[index],Juego.TILES_SIZE*i -lvlOffset , Juego.TILES_SIZE*j,Juego.TILES_SIZE,Juego.TILES_SIZE, null);
             }
         }
         

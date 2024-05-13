@@ -5,6 +5,7 @@
  */
 package ObjetosNegocio.inputs;
 
+import ObjetosNegocio.EstadoJuego;
 import Presentacion.JuegoPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,19 +22,45 @@ public class MouseInputs implements MouseListener, MouseMotionListener{
  }
     @Override
     public void mouseClicked(MouseEvent e) {
-       if(e.getButton()==MouseEvent.BUTTON1){
-           juegoPanel.getJuego().getJugador().setAtaque(true);
-       }
+        switch (EstadoJuego.estado) {
+            case JUGANDO:
+                juegoPanel.getJuego().getJugando().mouseClicked(e);
+                break;
+            default:
+                break;
+
+        }
+
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+        switch (EstadoJuego.estado) {
+            case MENU:
+                juegoPanel.getJuego().getMenu().mousePressed(e);
+                break;
+            case JUGANDO:
+                juegoPanel.getJuego().getJugando().mousePressed(e);
+                break;
+            default:
+                break;
+
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        
+        switch (EstadoJuego.estado) {
+            case MENU:
+                juegoPanel.getJuego().getMenu().mouseReleased(e);
+                break;
+            case JUGANDO:
+                juegoPanel.getJuego().getJugando().mouseReleased(e);
+                break;
+            default:
+                break;
+
+        }
     }
 
     @Override
@@ -53,7 +80,17 @@ public class MouseInputs implements MouseListener, MouseMotionListener{
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        
+        switch (EstadoJuego.estado) {
+            case MENU:
+                juegoPanel.getJuego().getMenu().mouseMoved(e);
+                break;
+            case JUGANDO:
+                juegoPanel.getJuego().getJugando().mouseMoved(e);
+                break;
+            default:
+                break;
+
+        }
     }
     
 }

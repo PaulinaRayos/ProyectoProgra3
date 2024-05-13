@@ -36,7 +36,7 @@ public class Jugador extends Entidad{
     private int accionJugador=CORRER;
     private boolean izquierda,derecha,arriba,abajo,saltar;
     private boolean movimiento=false, ataque=false;
-    private float velocidadJugador=1.5F;
+    private float velocidadJugador=1.F *Juego.SCALE;
     private int[][] lvlDatos;
     private float xDrawOffset = 21 * Juego.SCALE;
     private float yDrawOffset = 4 * Juego.SCALE;
@@ -53,7 +53,7 @@ public class Jugador extends Entidad{
     public Jugador(float x, float y,int width, int height) {
         super(x, y,width,height);
         cargarImagenes();
-        initHitbox(x,y,20*Juego.SCALE,28*Juego.SCALE);
+        initHitbox(x,y,(int)(20*Juego.SCALE),(int)(28*Juego.SCALE));
         
     }
     public void actializa(){
@@ -62,9 +62,9 @@ public class Jugador extends Entidad{
         setAnimacion();
         
     }
-    public void render(Graphics g){
-        g.drawImage(subImages[accionJugador][aniIndex],(int)(hitbox.x-xDrawOffset),(int)(hitbox.y-yDrawOffset-10),width,height,null);
-        drawHitbox(g);
+    public void render(Graphics g, int lvlOffset){
+        g.drawImage(subImages[accionJugador][aniIndex],(int)(hitbox.x-xDrawOffset)-lvlOffset,(int)(hitbox.y-yDrawOffset-10),width,height,null);
+        //drawHitbox(g);
     }
    
    
@@ -107,8 +107,10 @@ public class Jugador extends Entidad{
         if(saltar){
             saltar();
         }
-        if(!izquierda && !derecha && !enAire){
-            return;
+        if(!enAire){
+            if((!izquierda && !derecha) || (izquierda && derecha)){
+                return;
+            }
         }
         float xVelocidad=0;
         

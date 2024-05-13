@@ -5,6 +5,7 @@
  */
 package ObjetosNegocio.inputs;
 
+import ObjetosNegocio.EstadoJuego;
 import Presentacion.JuegoPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -26,46 +27,31 @@ public class KeyBoardInputs implements KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
-        
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_A:
-                juegoPanel.getJuego().getJugador().setIzquierda(true);
-                break;
-            case KeyEvent.VK_S:
-                juegoPanel.getJuego().getJugador().setAbajo(true);
-                break;
-            case KeyEvent.VK_D:
-               juegoPanel.getJuego().getJugador().setDerecha(true);
-                break;
-            case KeyEvent.VK_W:
-                juegoPanel.getJuego().getJugador().setArriba(true);
-                break;
-             case KeyEvent.VK_SPACE:
-                juegoPanel.getJuego().getJugador().setSaltar(true);
-                break;
+        switch (EstadoJuego.estado) {
+            case MENU:
+                    juegoPanel.getJuego().getMenu().keyPressed(e);
+                    break;
+            case JUGANDO:
+                    juegoPanel.getJuego().getJugando().keyPressed(e);
+                    break;
+            default:
+                    break;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_A:
-                juegoPanel.getJuego().getJugador().setIzquierda(false);
-                break;
-            case KeyEvent.VK_S:
-                juegoPanel.getJuego().getJugador().setAbajo(false);
-                break;
-            case KeyEvent.VK_D:
-               juegoPanel.getJuego().getJugador().setDerecha(false);
-                break;
-            case KeyEvent.VK_W:
-                juegoPanel.getJuego().getJugador().setArriba(false);
-                break;
-            case KeyEvent.VK_SPACE:
-                juegoPanel.getJuego().getJugador().setSaltar(false);
-                break;
-        }
+        switch (EstadoJuego.estado) {
+            case MENU:
+                    juegoPanel.getJuego().getMenu().keyReleased(e);
+                    break;
+            case JUGANDO:
+                    juegoPanel.getJuego().getJugando().keyReleased(e);
+                    break;
+            default:
+                    break;
+
+            }
     }
     
 }

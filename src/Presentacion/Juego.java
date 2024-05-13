@@ -5,8 +5,9 @@
  */
 package Presentacion;
 
-import ObjetosNegocio.nivel.AdministrarNivel;
-import entidades.Jugador;
+import ObjetosNegocio.EstadoJuego;
+import ObjetosNegocio.Jugando;
+import ObjetosNegocio.Menu;
 import java.awt.Graphics;
 
 /**
@@ -19,11 +20,12 @@ public class Juego implements Runnable{
     private Thread juegoHilo;
     private final int FPS_SET=120;
     private final int UPS_SET=200;
-    private Jugador jugador;
-    private AdministrarNivel adminLevel;
+    
+    private Jugando jugando;
+    private Menu menu;
     
     public final static int TILES_DEFAULT_SIZE=32;
-    public final static float SCALE=2f;
+    public final static float SCALE=1.5f;
     public final static int TILES_IN_WIDTH=26;
     public final static int TILES_IN_HEIGHT=14;
     public final static int TILES_SIZE=(int) (TILES_DEFAULT_SIZE*SCALE);
@@ -43,13 +45,36 @@ public class Juego implements Runnable{
         juegoHilo= new Thread(this);
         juegoHilo.start();
     }
-    public void actualiza(){
-        jugador.actializa();
-        adminLevel.actualiza();
+    public void actualiza() {
+
+        switch (EstadoJuego.estado) {
+            case MENU:
+                menu.update();
+                break;
+            case JUGANDO:
+                jugando.update();
+                break;
+            case OPCIONES:
+            case QUITAR:
+            default:
+                System.exit(0);
+                break;
+
+        }
     }
+
     public void render(Graphics g){
-        adminLevel.dibuja(g);
-        jugador.render(g);
+        switch(EstadoJuego.estado){
+            case MENU:
+               menu.draw(g);
+                break;
+            case JUGANDO:
+               jugando.draw(g);
+                break;
+            default:
+                break;
+        }
+        
     }
     @Override
     public void run() {
@@ -90,16 +115,19 @@ public class Juego implements Runnable{
     }
 
     private void initClases() {
-        adminLevel=new AdministrarNivel(this);
-        jugador=new Jugador(200,220,(int)(51*SCALE),(int)(47*SCALE));
-        jugador.cargaNivel(adminLevel.getNivelActual().getDatosNivel());
-        
-    }
-    public Jugador getJugador(){
-        return jugador;
+        menu=new Menu(this);
+        jugando=new Jugando(this);
     }
 
-    void windowFocusLost() {
-        jugador.reiniciarDirBooleans();
+    public void windowFocusLost() {
+       if(EstadoJuego.estado==EstadoJuego.JUGANDO) {
+            jugando.getJugador().reiniciarDirBooleans();
+        }
+    }
+    public Menu getMenu(){
+        return menu;
+    }
+    public Jugando getJugando(){
+        return jugando;
     }
 }
