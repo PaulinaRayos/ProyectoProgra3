@@ -5,10 +5,7 @@
  */
 package ObjetosNegocio;
 
-/**
- *
- * @author lalo_
- */
+
 public class test {
     
 }

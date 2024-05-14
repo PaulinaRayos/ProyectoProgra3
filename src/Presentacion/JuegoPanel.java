@@ -19,10 +19,7 @@ import static ObjetosNegocio.inputs.Constantes.PlayerConstants.*;
 import static ObjetosNegocio.inputs.Constantes.Direcciones.*;
 import static Presentacion.Juego.GAME_HEIGHT;
 import static Presentacion.Juego.GAME_WIDTH;
-/**
- *
- * @author lalo_
- */
+
 public class JuegoPanel extends JPanel {
     private MouseInputs mouseInputs;
     private Juego juego;

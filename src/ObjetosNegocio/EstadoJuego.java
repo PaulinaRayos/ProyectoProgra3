@@ -5,10 +5,7 @@
  */
 package ObjetosNegocio;
 
-/**
- *
- * @author lalo_
- */
+
 public enum EstadoJuego {
     JUGANDO,MENU, OPCIONES,QUITAR;
     public static  EstadoJuego estado=MENU;

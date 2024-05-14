@@ -6,6 +6,7 @@
 package entidades;
 
 import ObjetosNegocio.CargarGuardar;
+import ObjetosNegocio.Jugando;
 import static ObjetosNegocio.inputs.Constantes.Direcciones.ABAJO;
 import static ObjetosNegocio.inputs.Constantes.Direcciones.ARRIBA;
 import static ObjetosNegocio.inputs.Constantes.Direcciones.DERECHA;
@@ -22,13 +23,13 @@ import javax.imageio.ImageIO;
 import static ObjetosNegocio.MetodosAyuda.*;
 import static ObjetosNegocio.inputs.Constantes.PlayerConstants.BRINCAR;
 import static ObjetosNegocio.inputs.Constantes.PlayerConstants.CAER;
+import static ObjetosNegocio.inputs.Constantes.PlayerConstants.GOLPE;
+import static ObjetosNegocio.inputs.Constantes.PlayerConstants.MORIR;
 import Presentacion.Juego;
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 
-/**
- *
- * @author lalo_
- */
+
 public class Jugador extends Entidad{
 
     private BufferedImage[][] subImages;
@@ -50,23 +51,96 @@ public class Jugador extends Entidad{
     
     
     
-    public Jugador(float x, float y,int width, int height) {
+    //barra de vida
+    private BufferedImage statusBarImg;
+    private int statusBarWidth = (int) (192 * Juego.SCALE);
+    private int statusBarHeight = (int) (58 * Juego.SCALE);
+    private int statusBarX = (int) (10 * Juego.SCALE);
+    private int statusBarY = (int) (10 * Juego.SCALE);
+
+    private int healthBarWidth = (int) (150 * Juego.SCALE);
+    private int healthBarHeight = (int) (4 * Juego.SCALE);
+    private int healthBarXStart = (int) (34 * Juego.SCALE);
+    private int healthBarYStart = (int) (14 * Juego.SCALE);
+   
+    private int maxHealth = 100;
+    private int currentHealth = maxHealth;
+    private int healthWidth = healthBarWidth;
+    
+    // AttackBox
+    private Rectangle2D.Float attackBox;
+    
+    
+    private int flipX = 0;
+    private int flipW = 1;
+    
+    private boolean attackChecked;
+    private Jugando jugando;
+    
+    public Jugador(float x, float y,int width, int height,Jugando jugando) {
         super(x, y,width,height);
+        this.jugando=jugando;
         cargarImagenes();
         initHitbox(x,y,(int)(20*Juego.SCALE),(int)(28*Juego.SCALE));
-        
+        initAttackBox();
+    }
+    private void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x, y, (int) (20 * Juego.SCALE), (int) (20 * Juego.SCALE));
     }
     public void actializa(){
+        updateHealthBar();
+        if (currentHealth <= 0) {
+            jugando.setGameOver(true);
+            return;
+        }
+        
+        updateAttackBox();
+        
         actualizarPosicion();
+        if (ataque){
+            checkAttack();
+        }
+			
         actualizaAnimacion();
         setAnimacion();
         
     }
-    public void render(Graphics g, int lvlOffset){
-        g.drawImage(subImages[accionJugador][aniIndex],(int)(hitbox.x-xDrawOffset)-lvlOffset,(int)(hitbox.y-yDrawOffset-10),width,height,null);
-        //drawHitbox(g);
+    private void checkAttack() {
+        if (attackChecked || aniIndex != 1) {
+            return;
+        }
+        attackChecked = true;
+        jugando.checkEnemyHit(attackBox);
+
     }
-   
+    private void updateAttackBox() {
+        if (derecha) {
+            attackBox.x = hitbox.x + hitbox.width + (int) (Juego.SCALE );
+        } else if (izquierda) {
+            attackBox.x = hitbox.x - hitbox.width - (int) (Juego.SCALE *10);
+        }
+
+        attackBox.y = hitbox.y + (Juego.SCALE * 10);
+    }
+    private void updateHealthBar() {
+        healthWidth = (int) ((currentHealth / (float) maxHealth) * healthBarWidth);
+    }
+    public void render(Graphics g, int lvlOffset){
+        g.drawImage(subImages[accionJugador][aniIndex],(int)(hitbox.x-xDrawOffset)-lvlOffset +flipX,(int)(hitbox.y-yDrawOffset-10),width * flipW,height,null);
+        //drawHitbox(g,lvlOffset);
+        //drawAttackBox(g, lvlOffset);
+        drawUI(g);
+    }
+    private void drawAttackBox(Graphics g, int lvlOffsetX) {
+        g.setColor(Color.red);
+        g.drawRect((int) attackBox.x - lvlOffsetX, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+
+    }
+    private void drawUI(Graphics g) {
+        g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+        g.setColor(Color.red);
+        g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
+    }
    
     private void actualizaAnimacion(){
         aniTick++;
@@ -76,6 +150,7 @@ public class Jugador extends Entidad{
             if(aniIndex>=getAccion(accionJugador)){
                 aniIndex=0;
                 ataque=false;
+                attackChecked = false;
             }
                 
         }
@@ -95,8 +170,13 @@ public class Jugador extends Entidad{
                   //  accionJugador=CAER;
             }
         }
-        if(ataque){
-            accionJugador=PEGAR;
+        if (ataque) {
+            accionJugador = PEGAR;
+            if (empiezaAni != PEGAR) {
+                aniIndex = 1;
+                aniTick = 0;
+                return;
+            }
         }
         if(empiezaAni != accionJugador){
             reiniciarTick();
@@ -114,8 +194,10 @@ public class Jugador extends Entidad{
         }
         float xVelocidad=0;
         
-        if(izquierda )     {
+        if(izquierda ){
             xVelocidad-=velocidadJugador;  
+            flipX=width;
+            flipW = -1;
         }
         if(!enAire){
             if (!entidadEnElPiso(hitbox, lvlDatos)){
@@ -124,6 +206,8 @@ public class Jugador extends Entidad{
         }
         if(derecha){
             xVelocidad+=velocidadJugador;
+            flipX = 0;
+            flipW = 1;
         }
         if(enAire){
             if (CanMoveHere(hitbox.x, hitbox.y + velocidadAire, hitbox.width, hitbox.height, lvlDatos)){
@@ -152,24 +236,26 @@ public class Jugador extends Entidad{
             hitbox.x=GetEntidadXPosSiguientePared(hitbox,xVelocidad);
         }
     }
-    private void cargarImagenes(){
-            BufferedImage img=CargarGuardar.GetJugadorAtlas(CargarGuardar.RUTAJUGADOR);
-            subImages=new BufferedImage[5][5];
-            //subImages[0]=img.getSubimage(118, 21, 40, 56);
-            subImages[PARADO][0]=img.getSubimage(221, 247, 44, 56);
-            subImages[PARADO][1]=img.getSubimage(202, 19, 40, 56);
-            subImages[CORRER][0]=img.getSubimage(40, 514, 45, 49);
-            subImages[CORRER][1]=img.getSubimage(134, 512, 57, 46);
-            subImages[CORRER][2]=img.getSubimage(234, 507, 44, 47);
-            subImages[PEGAR][0]=img.getSubimage(322, 252, 49, 51);
-            subImages[PEGAR][1]=img.getSubimage(635, 250, 55, 49);
-            subImages[BRINCAR][0]=img.getSubimage(373, 20, 42, 53);
-            subImages[BRINCAR][1]=img.getSubimage(465, 22, 46, 46);
-            subImages[BRINCAR][2]=img.getSubimage(564, 24, 44, 43);
-            subImages[BRINCAR][3]=img.getSubimage(214, 134, 48, 47);
-            subImages[BRINCAR][4]=img.getSubimage(409, 129, 45, 59);
-            subImages[CAER][0]=img.getSubimage(509, 134, 48, 47);
-            
+    private void cargarImagenes() {
+        BufferedImage img = CargarGuardar.GetJugadorAtlas(CargarGuardar.RUTAJUGADOR);
+        subImages = new BufferedImage[7][5];
+        //subImages[0]=img.getSubimage(118, 21, 40, 56);
+        subImages[PARADO][0] = img.getSubimage(221, 247, 44, 56);
+        subImages[PARADO][1] = img.getSubimage(202, 19, 40, 56);
+        subImages[CORRER][0] = img.getSubimage(40, 514, 45, 49);
+        subImages[CORRER][1] = img.getSubimage(134, 512, 57, 46);
+        subImages[CORRER][2] = img.getSubimage(234, 507, 44, 47);
+        subImages[PEGAR][0] = img.getSubimage(322, 252, 49, 51);
+        subImages[PEGAR][1] = img.getSubimage(635, 250, 55, 49);
+        subImages[BRINCAR][0] = img.getSubimage(373, 20, 42, 53);
+        subImages[BRINCAR][1] = img.getSubimage(465, 22, 46, 46);
+        subImages[BRINCAR][2] = img.getSubimage(564, 24, 44, 43);
+        subImages[BRINCAR][3] = img.getSubimage(214, 134, 48, 47);
+        subImages[BRINCAR][4] = img.getSubimage(409, 129, 45, 59);
+        subImages[CAER][0] = img.getSubimage(509, 134, 48, 47);
+        subImages[MORIR][0] = img.getSubimage(427, 576, 38, 46);
+        subImages[GOLPE][0] = img.getSubimage(133, 564, 50, 49);
+        statusBarImg = CargarGuardar.GetJugadorAtlas(CargarGuardar.STATUS_BAR);
     }
     public void cargaNivel(int[][] lvlDatos){
         this.lvlDatos=lvlDatos;
@@ -243,8 +329,31 @@ public class Jugador extends Entidad{
         enAire=true;
         velocidadAire=velocidadSalto;  
     }
+    public void changeHealth(int value) {
+        currentHealth += value;
 
-    
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+        } else if (currentHealth >= maxHealth) {
+            currentHealth = maxHealth;
+        }
+    }
+    public void resetAll() {
+        reiniciarDirBooleans();
+        enAire = false;
+        ataque = false;
+        movimiento = false;
+        accionJugador = PARADO;
+        currentHealth = maxHealth;
+
+        hitbox.x = x;
+        hitbox.y = y;
+
+        if (!entidadEnElPiso(hitbox, lvlDatos)) {
+            enAire = true;
+        }
+        
+    }
 
     
     

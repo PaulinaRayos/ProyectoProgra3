@@ -7,22 +7,25 @@ package ObjetosNegocio.nivel;
 
 import ObjetosNegocio.CargarGuardar;
 import Presentacion.Juego;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author lalo_
- */
+
 public class AdministrarNivel {
     private Juego juego;
     private BufferedImage[] levelSprite;
     private Nivel nivel1;
-    public AdministrarNivel(Juego juego){
+    private int nivelIndex;
+    public AdministrarNivel(Juego juego, int nivel){
         this.juego=juego;
+        this.nivelIndex = nivel;
         //levelSprite=CargarGuardar.GetJugadorAtlas(CargarGuardar.RUTANIVEL);
         importarSprites();
-        nivel1= new Nivel(CargarGuardar.getDatosNivel());
+        cargarNivel(this.nivelIndex);
+    }
+     public void cargarNivel(int nivel) {
+        nivel1 = new Nivel(CargarGuardar.getDatosNivel(nivel));
     }
     public void dibuja(Graphics g, int lvlOffset){
         for (int j = 0; j < Juego.TILES_IN_HEIGHT; j++) {
@@ -31,7 +34,6 @@ public class AdministrarNivel {
                 g.drawImage(levelSprite[index],Juego.TILES_SIZE*i -lvlOffset , Juego.TILES_SIZE*j,Juego.TILES_SIZE,Juego.TILES_SIZE, null);
             }
         }
-        
     }
     public void actualiza(){
         
@@ -49,5 +51,9 @@ public class AdministrarNivel {
     }
     public Nivel getNivelActual(){
         return nivel1;
+    }
+    public void siguienteNivel() {
+        nivelIndex++;
+        cargarNivel(nivelIndex);
     }
 }

@@ -9,10 +9,7 @@ import Presentacion.BotonMenu;
 import Presentacion.Juego;
 import java.awt.event.MouseEvent;
 
-/**
- *
- * @author lalo_
- */
+
 public class Estado {
     protected Juego juego;
 

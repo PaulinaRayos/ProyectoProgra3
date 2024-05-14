@@ -10,10 +10,7 @@ import Presentacion.JuegoPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import static ObjetosNegocio.inputs.Constantes.Direcciones.*;
-/**
- *
- * @author lalo_
- */
+
 public class KeyBoardInputs implements KeyListener{
     private JuegoPanel juegoPanel;
     

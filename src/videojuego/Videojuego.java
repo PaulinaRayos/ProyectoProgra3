@@ -7,10 +7,7 @@ package videojuego;
 
 import Presentacion.Juego;
 
-/**
- *
- * @author lalo_
- */
+
 public class Videojuego {
 
     /**

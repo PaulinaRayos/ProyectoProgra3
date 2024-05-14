@@ -15,10 +15,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author lalo_
- */
+
 public class CargarGuardar {
     public static final String RUTAJUGADOR="../res/players.png";
     public static final String RUTANIVEL="../res/outside_sprites.png";
@@ -28,8 +25,10 @@ public class CargarGuardar {
     public static final String MENU_BACKGROUND = "../res/menu_background.png";
     public static final String MENU_BACKGROUND_IMG = "../res/sonicBackgournd2.jpg";
     public static final String CRABBY_SPRITE = "../res/crabby_sprite.png";
-    
-    
+    public static final String STATUS_BAR = "../res/health_power_bar.png";
+    public static final String GAME_OVER = "../res/GameOver.png";
+    public static final String GAME_GANADOR = "../res/PrimerLugar.png";
+    public static final String RUTANIVELDATOS_2 = "../res/level_two_data_long.png";
     public static BufferedImage GetJugadorAtlas(String filename){
         BufferedImage img=null;
         InputStream is=CargarGuardar.class.getResourceAsStream(filename);
@@ -57,8 +56,45 @@ public class CargarGuardar {
         }
         return lvlDatos;
     }
-    public static ArrayList<Cangrejo> GetCrabs() {
-        BufferedImage img = GetJugadorAtlas(RUTANIVELDATOS);
+    public static int[][] getDatosNivel(int nivel) {
+        String ruta;
+        switch (nivel) {
+            case 1:
+                ruta = RUTANIVELDATOS;
+                break;
+            case 2:
+                ruta = RUTANIVELDATOS_2;
+                break;
+            default:
+                ruta = RUTANIVELDATOS;
+        }
+        BufferedImage img = GetJugadorAtlas(ruta);
+        int[][] lvlDatos = new int[img.getHeight()][img.getWidth()];
+        for (int j = 0; j < img.getHeight(); j++) {
+            for (int i = 0; i < img.getWidth(); i++) {
+                Color color = new Color(img.getRGB(i, j));
+                int value = color.getRed();
+                if (value >= 48) {
+                    value = 0;
+                }
+                lvlDatos[j][i] = value;
+            }
+        }
+        return lvlDatos;
+    }
+    public static ArrayList<Cangrejo> GetCrabs(int nivel) {
+        String ruta;
+        switch (nivel) {
+            case 1:
+                ruta = RUTANIVELDATOS;
+                break;
+            case 2:
+                ruta = RUTANIVELDATOS_2;
+                break;
+            default:
+                ruta = RUTANIVELDATOS;
+        }
+        BufferedImage img = GetJugadorAtlas(ruta);
         ArrayList<Cangrejo> list = new ArrayList<>();
         for (int j = 0; j < img.getHeight(); j++) {
             for (int i = 0; i < img.getWidth(); i++) {
@@ -72,4 +108,5 @@ public class CargarGuardar {
         return list;
 
     }
+    
 }

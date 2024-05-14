@@ -5,10 +5,7 @@
  */
 package ObjetosNegocio.nivel;
 
-/**
- *
- * @author lalo_
- */
+
 public class Nivel {
     private int [][]lvlDatos;
     public Nivel(int[][] lvlDatos){

@@ -8,12 +8,12 @@ package Presentacion;
 import ObjetosNegocio.EstadoJuego;
 import ObjetosNegocio.Jugando;
 import ObjetosNegocio.Menu;
+import Persistencia.AdmPuntaje;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.util.List;
 
-/**
- *
- * @author lalo_
- */
+
 public class Juego implements Runnable{
     private Ventana ventana;
     private JuegoPanel juegoPanel;
@@ -31,7 +31,7 @@ public class Juego implements Runnable{
     public final static int TILES_SIZE=(int) (TILES_DEFAULT_SIZE*SCALE);
     public final static int GAME_WIDTH=TILES_SIZE*TILES_IN_WIDTH;
     public final static int GAME_HEIGHT=TILES_SIZE*TILES_IN_HEIGHT;
-    
+      AdmPuntaje admPuntaje = new AdmPuntaje();
     public Juego(){
         initClases();
         juegoPanel=new JuegoPanel(this);
@@ -55,6 +55,9 @@ public class Juego implements Runnable{
                 jugando.update();
                 break;
             case OPCIONES:
+                drawPuntos();
+                EstadoJuego.estado = EstadoJuego.MENU;
+                break;
             case QUITAR:
             default:
                 System.exit(0);
@@ -62,7 +65,7 @@ public class Juego implements Runnable{
 
         }
     }
-
+    
     public void render(Graphics g){
         switch(EstadoJuego.estado){
             case MENU:
@@ -75,6 +78,15 @@ public class Juego implements Runnable{
                 break;
         }
         
+    }
+    public void drawPuntos() {
+        try{
+        List<String> highScores = admPuntaje.getHighScores();
+        HighScoresWindow highScoresWindow = new HighScoresWindow(highScores);
+        highScoresWindow.setVisible(true);
+        }catch(Exception ex){
+            
+        }
     }
     @Override
     public void run() {

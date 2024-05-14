@@ -11,10 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-/**
- *
- * @author lalo_
- */
+
 public class MouseInputs implements MouseListener, MouseMotionListener{
  private JuegoPanel juegoPanel;
  public MouseInputs(JuegoPanel juegoPanel){

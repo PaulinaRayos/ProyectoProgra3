@@ -13,10 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author lalo_
- */
+
 public class Menu extends Estado  implements MetodosEstado{
 
     private BotonMenu[] buttons = new BotonMenu[3];

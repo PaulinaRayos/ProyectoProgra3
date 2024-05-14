@@ -9,10 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import javax.swing.JFrame;
 
-/**
- *
- * @author lalo_
- */
+
 public class Ventana {
     private JFrame jframe;
     public Ventana(JuegoPanel juegoPanel){
@@ -20,9 +17,9 @@ public class Ventana {
         
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(juegoPanel);
-        jframe.setLocationRelativeTo(null);
         jframe.setResizable(false);
         jframe.pack();
+        jframe.setLocationRelativeTo(null);
         juegoPanel.setFocusable(true); // Habilitar el enfoque del teclado en el JuegoPanel
         juegoPanel.requestFocusInWindow(); 
         jframe.setVisible(true);

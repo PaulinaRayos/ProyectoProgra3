@@ -7,10 +7,7 @@ package ObjetosNegocio.inputs;
 
 import Presentacion.Juego;
 
-/**
- *
- * @author lalo_
- */
+
 public class Constantes {
     public static class EnemyConstants {
 
@@ -27,7 +24,11 @@ public class Constantes {
 
         public static final int CRABBY_WIDTH = (int) (CRABBY_WIDTH_DEFAULT * Juego.SCALE);
         public static final int CRABBY_HEIGHT = (int) (CRABBY_HEIGHT_DEFAULT * Juego.SCALE);
-
+        
+        
+        public static final int CRABBY_DRAWOFFSET_X = (int) (26 * Juego.SCALE);
+	public static final int CRABBY_DRAWOFFSET_Y = (int) (9 * Juego.SCALE);
+        
         public static int GetSpriteAmount(int enemy_type, int enemy_state) {
 
             switch (enemy_type) {
@@ -47,6 +48,24 @@ public class Constantes {
             }
 
             return 0;
+
+        }
+        public static int GetMaxHealth(int enemy_type) {
+            switch (enemy_type) {
+                case CRABBY:
+                    return 10;
+                default:
+                    return 1;
+            }
+        }
+
+        public static int GetEnemyDmg(int enemy_type) {
+            switch (enemy_type) {
+                case CRABBY:
+                    return 15;
+                default:
+                    return 0;
+            }
 
         }
 
@@ -72,8 +91,14 @@ public class Constantes {
         public static final int BRINCAR=2;
         public static final int CAER=3;
         public static final int PEGAR=4;
+        public static final int MORIR=5;
+        public static final int GOLPE=6;
         public static int getAccion(int accion){
             switch(accion){
+                case MORIR:
+                    return 1;
+                case GOLPE:
+                    return 1;
                 case CORRER:
                     return 3;
                 case PARADO:
