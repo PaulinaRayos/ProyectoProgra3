@@ -1,0 +1,5 @@
+Jug:20000
+Jugad62:20000
+Jugador10:5000
+Jugador7:575
+Jugador6:350
